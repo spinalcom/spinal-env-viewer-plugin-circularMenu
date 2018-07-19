@@ -1,11 +1,11 @@
 <template>
     <div>
     <div :style="getStyle()">
-      <md-button  v-for="(button, index) in buttonTab" :key="index"  @click="button.myClick()" :style="getButtonStyle(index)" style="margin: unset;pointer-events: auto;background: red; height: 40px" class="md-icon-button slice">
+      <md-button  v-for="(button, index) in buttonTab" :key="index"  @click="button.myClick()" :style="getButtonStyle(index)" style="margin: unset;pointer-events: auto;background: red; height: 40px" class="md-icon-button">
         <md-icon>{{button.icon}}</md-icon>
       </md-button>
     </div>
-      <md-button @click="activateMode" :style="color" class="activeButton md-icon-button slice">
+      <md-button @click="activateMode" :style="color" class="myButton md-icon-button">
       </md-button>
 
     </div>
@@ -15,7 +15,6 @@
 <script>
 var spinalSystem;
 var viewer;
-// import event from "./event.vue";
 
 export default {
   name: "newFile",
@@ -28,7 +27,11 @@ export default {
         background: "red"
       },
       activateModeBool: false,
-      styleContener: {}
+      styleContener: {},
+      positionX: "",
+      positionY: "",
+      node: {},
+      appsList: {}
     };
   },
   components: {},
@@ -54,7 +57,15 @@ export default {
       }
     },
     onSelectionChange: function(data) {
-      if (this.activateModeBool) this.data = data;
+      if (this.activateModeBool) {
+        this.data = data;
+        // console.log(this.data);
+        if (this.data.dbIdArray.length != 0) {
+          this.positionX = this._viewport.x;
+          this.positionY = this._viewport.y;
+          this.getNode();
+        }
+      }
     },
     getStyle: function() {
       if (typeof this.data.dbIdArray != "undefined" && this.data.dbIdArray) {
@@ -80,33 +91,25 @@ export default {
 
           return obj;
         } else {
-          // this.circleClass = "circle";
           return {
             position: "absolute",
             opacity: 0,
 
             "-webkit-transform": "scale(0)",
             "-moz-transform": "scale(0)",
-            transform: "scale(0)",
-
-            "-webkit-transition": "all 0.4s ease-out",
-            "-moz-transition": "all 0.4s ease-out",
-            transition: "all 0.4s ease-out"
+            transform: "scale(0)"
           };
         }
       } else {
         // this.circleClass = "circle";
+
         return {
           position: "absolute",
           opacity: 0,
 
           "-webkit-transform": "scale(0)",
           "-moz-transform": "scale(0)",
-          transform: "scale(0)",
-
-          "-webkit-transition": "all 0.4s ease-out",
-          "-moz-transition": "all 0.4s ease-out",
-          transition: "all 0.4s ease-out"
+          transform: "scale(0)"
         };
       }
     },
@@ -127,7 +130,7 @@ export default {
       }
       let axeX = (rayon * Math.cos(nbr * index)).toFixed(1);
       let axeY = (rayon * Math.sin(nbr * index)).toFixed(1);
-      console.log(axeX, axeY);
+      // console.log(axeX, axeY);
       myStyle.left = "calc(50% + " + (axeX - 20) + "px)";
       myStyle.top = "calc(50% + " + (axeY - 20) + "px)";
       // console.log(myStyle);
@@ -138,26 +141,19 @@ export default {
       var viewport = { x: e.canvasX, y: e.clientY };
       this._viewport = viewport;
     },
-    file: function(button) {
-      console.log("file");
-      // console.log(button);
-      spinal.eventBus.$emit("openFilePanel", this.data.dbIdArray[0]);
-
-      // event.$emit("openResumePanel", this.data.dbIdArray[0], 2);
+    getNode: function() {
+      spinal.contextStudio.graph
+        .getNodeBydbId(this.data.dbIdArray[0])
+        .then(node => {
+          this.node = node;
+          console.log("SEND GET NODE CLICK EVENT");
+          spinal.eventBus.$emit("getNodeClick", node);
+        });
     },
-    link: function(button) {
-      console.log("link");
-      // console.log(button);
-      spinal.eventBus.$emit("openLinkPanel", this.data.dbIdArray[0]);
 
-      // event.$emit("openResumePanel", this.data.dbIdArray[0], 2);
-    },
-    comments: function(button) {
-      console.log("comments");
-      // console.log(button);
-      spinal.eventBus.$emit("openCommentsPanel", this.data.dbIdArray[0]);
-
-      // event.$emit("openResumePanel", this.data.dbIdArray[0], 2);
+    drive: function() {
+      console.log("drive");
+      spinal.eventBus.$emit("openDrivePanel", this.node);
     },
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -165,6 +161,7 @@ export default {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     addButton: function(func, icon) {
+      // console.log(func.name);
       var obj = {
         myClick: func,
         icon: icon
@@ -180,9 +177,31 @@ export default {
     // this.addButton(this.file, "attach_file");
     spinal.circularMenu = {};
     spinal.circularMenu.addButton = this.addButton;
-    spinal.circularMenu.addButton(this.file, "attach_file");
-    spinal.circularMenu.addButton(this.link, "insert_link");
-    spinal.circularMenu.addButton(this.comments, "border_color");
+
+    spinal.circularMenu.addButton(this.drive, "folder");
+
+    // spinalSystem.getModel().then(forgeFile => {
+    //   if (forgeFile) {
+    //     if (forgeFile.apps) {
+    //       // console.log(forgeFile.apps);
+    //       if (typeof forgeFile.apps.appsList !== "undefined") {
+    //         forgeFile.apps.appsList.load(appsList => {
+    //           this.appsList = appsList;
+    //           // this.allComments.bind(this.onModelChange);
+    //         });
+    //       } else {
+    //         var list = new Lst();
+    //         forgeFile.apps.add_attr({
+    //           appsList: new Ptr(list)
+    //         });
+    //         forgeFile.apps.appsList.load(appsList => {
+    //           this.appsList = appsList;
+    //           // this.allComments.bind(this.onModelChange);
+    //         });
+    //       }
+    //     }
+    //   }
+    // });
 
     // this.buttonTab.push({ myClick: this.file, icon: "attach_file" });
 
@@ -192,7 +211,7 @@ export default {
 </script>
 
 <style>
-.activeButton {
+.myButton {
   margin: unset;
   pointer-events: auto;
   background: red;
