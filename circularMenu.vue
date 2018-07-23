@@ -178,7 +178,7 @@ export default {
     spinal.circularMenu = {};
     spinal.circularMenu.addButton = this.addButton;
 
-    spinal.circularMenu.addButton(this.drive, "folder");
+    spinal.circularMenu.addButton(this.drive, "attach_file");
 
     // spinalSystem.getModel().then(forgeFile => {
     //   if (forgeFile) {
