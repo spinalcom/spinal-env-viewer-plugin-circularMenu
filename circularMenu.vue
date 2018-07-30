@@ -1,7 +1,7 @@
 <template>
     <div>
     <div :style="getStyle()">
-      <md-button  v-for="(button, index) in buttonTab" :key="index"  @click="button.myClick()" :style="getButtonStyle(index)" style="margin: unset;pointer-events: auto;background: red; height: 40px" class="md-icon-button">
+      <md-button  v-for="(button, index) in buttonTab" :key="index"  @click="button.myClick()" :style="getButtonStyle(index)" style="margin: unset;pointer-events: auto;background: #2D3D93; height: 40px" class="md-icon-button">
         <md-icon>{{button.icon}}</md-icon>
       </md-button>
     </div>
@@ -24,9 +24,9 @@ export default {
       _viewport: undefined,
       data: {},
       color: {
-        background: "red"
+        background: "green"
       },
-      activateModeBool: false,
+      activateModeBool: true,
       styleContener: {},
       positionX: "",
       positionY: "",
@@ -178,7 +178,7 @@ export default {
     spinal.circularMenu = {};
     spinal.circularMenu.addButton = this.addButton;
 
-    spinal.circularMenu.addButton(this.drive, "attach_file");
+    // spinal.circularMenu.addButton(this.drive, "attach_file");
 
     // spinalSystem.getModel().then(forgeFile => {
     //   if (forgeFile) {
