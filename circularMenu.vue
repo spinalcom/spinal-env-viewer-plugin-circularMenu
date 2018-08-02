@@ -58,9 +58,9 @@ export default {
     },
     onSelectionChange: function(data) {
       if (this.activateModeBool) {
-        this.data = data;
-        // console.log(this.data);
-        if (this.data.dbIdArray.length != 0) {
+        if (data.dbIdArray.length == 1) {
+          this.data = data;
+          console.log("DEPLACEMENT DU CIRCULAR MENU");
           this.positionX = this._viewport.x;
           this.positionY = this._viewport.y;
           this.getNode();
