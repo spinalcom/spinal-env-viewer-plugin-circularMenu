@@ -24,7 +24,7 @@ export default {
       _viewport: undefined,
       data: {},
       color: {
-        background: "green"
+        background: "#2D3D93"
       },
       activateModeBool: true,
       styleContener: {},
@@ -49,11 +49,11 @@ export default {
     activateMode: function() {
       if (this.activateModeBool) {
         this.activateModeBool = false;
-        this.color.background = "red";
+        this.color.background = "#F68204";
         this.data = {};
       } else {
         this.activateModeBool = true;
-        this.color.background = "green";
+        this.color.background = "#2D3D93";
       }
     },
     onSelectionChange: function(data) {
