@@ -1,14 +1,22 @@
 <template>
-    <div>
+  <div>
     <div :style="getStyle()">
-      <md-button  v-for="(button, index) in buttonTab" :key="index"  @click="button.myClick()" :style="getButtonStyle(index)" style="margin: unset;pointer-events: auto;background: #2D3D93; height: 40px" class="md-icon-button">
+      <md-button v-for="(button, index) in buttonTab"
+                 :key="index"
+                 @click="button.myClick()"
+                 :style="getButtonStyle(index)"
+                 style="margin: unset;pointer-events: auto;background: #2D3D93; height: 40px"
+    
+                 class="md-icon-button">
         <md-icon>{{button.icon}}</md-icon>
       </md-button>
     </div>
-      <md-button @click="activateMode" :style="color" class="myButton md-icon-button">
-      </md-button>
+    <md-button @click="activateMode"
+               :style="color"
+               class="myButton md-icon-button">
+    </md-button>
 
-    </div>
+  </div>
 </template>
 
 
@@ -58,12 +66,14 @@ export default {
     },
     onSelectionChange: function(data) {
       if (this.activateModeBool) {
-        this.data = data;
         // console.log(this.data);
-        if (this.data.dbIdArray.length != 0) {
+        if (data.dbIdArray.length == 1) {
+          this.data = data;
           this.positionX = this._viewport.x;
           this.positionY = this._viewport.y;
           this.getNode();
+        } else {
+          this.data = [];
         }
       }
     },
